@@ -105,6 +105,10 @@ write.table = TRUE
 
 ## CIBERSORTx_Mixture_File_Builder
 
+### Description
+
+This function builds a Mixture File for CIBERSORTx from one or several .txt or .csv files containing CPM of bulk RNA-seq or microarray experiments.
+
 TBD
 
 ## About the Author
