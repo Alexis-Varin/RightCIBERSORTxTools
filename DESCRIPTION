@@ -1,0 +1,21 @@
+Package: RightCIBERSORTxTools
+Title: Reference Matrix And Mixture File Builder For CIBERSORTx
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alexis", "Varin", , "alexis.varin@inserm.fr", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0001-3474-7263"))
+Description: This package provides a set of tools to generate CIBERSORTx input files from RNA-seq data,
+    namely a Reference Matrix (a Seurat object's RNA counts in a tab delimited txt file with cell identity as column name)
+    and a Mixture File (a tab delimited txt file with each column containing CPM of a bulk RNA-seq or microarray experiment)
+    all in a single function.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    Seurat,
+    SeuratObject
+Depends: 
+    R (>= 2.10)
+LazyData: true
+LazyDataCompression: xz
