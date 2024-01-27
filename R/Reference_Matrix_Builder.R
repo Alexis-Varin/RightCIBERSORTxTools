@@ -16,10 +16,10 @@
 #' @param downsample.object.last Numeric. The number of cells to downsample from the Seurat object after subsetting clusters.1 and clusters.2. Leave NULL if you don't want to downsample.
 #' @param downsample.cluster Numeric. The number of cells to downsample from each cluster of ident.1. Will be performed after downsample.object.last. Leave NULL if you don't want to downsample.
 #' @param automatic.downsample Logical. If TRUE, automatically downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Performed after all other subset and downsample parameters. Ignored if write.table = FALSE. Please report an issue if you see a significant difference between the .txt or .tsv file written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the .txt file is 400 MB or 100 MB).
-#' @param max.matrix.size Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit. Ignored if write.table = FALSE.
+#' @param max.matrix.size Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit, or if automatic.downsample = TRUE will downsample the Seurat object instead so that the Reference Matrix output file is under the size limit. Ignored if write.table = FALSE.
 #' @param file.name Character. The name of the Reference Matrix file written to disk. Must not contain any space. You can specify .txt or .tsv for the output file.
 #' @param path Character. The path to write the Reference Matrix into. Leave NULL for current working directory.
-#' @param write.table Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file. If FALSE, only returns the Reference Matrix as a data.frame.
+#' @param write.table Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file.
 #'
 #' @return A data.frame containing the Seurat object's RNA counts, with cell identities as column names and feature names as row names. If write.table = TRUE, a .txt or .tsv file of the data.frame is also written to disk.
 #'
@@ -148,10 +148,10 @@ Reference_Matrix_Builder = function(
 
   if (length(seurat_object$RNA@counts) > 510000*max.matrix.size/1.024 & isTRUE(write.table))
     if (isFALSE(automatic.downsample))
-      stop(sprintf("The Reference Matrix output file will be over %s MB in size (%s cells by %s features), please subset clusters, downsample the number of cells or set automatic.downsample = TRUE",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts))))
+      stop(sprintf("The Reference Matrix output file will be over %s MB in size on CIBERSORTx web portal (%s cells by %s features), please subset clusters, downsample the number of cells or set automatic.downsample = TRUE",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts))))
     else {
       projected.cell.number = trunc(500000/1.024*max.matrix.size/length(rownames(seurat_object$RNA@counts)))
-      warning(sprintf("The Reference Matrix output file will be over %s MB in size (%s cells by %s features), automatically downsampling to %s cells to be under the size limit",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts)),projected.cell.number))
+      warning(sprintf("The Reference Matrix output file will be over %s MB in size on CIBERSORTx web portal (%s cells by %s features), automatically downsampling to %s cells to be under the size limit",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts)),projected.cell.number))
       current.ident = Idents(seurat_object)
       seurat_object@meta.data$seurat_object3 = "seurat_object3"
       Idents(seurat_object) = "seurat_object3"

@@ -54,13 +54,13 @@ Reference_Matrix_Builder(
 
 \item{automatic.downsample}{Logical. If TRUE, automatically downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Performed after all other subset and downsample parameters. Ignored if write.table = FALSE. Please report an issue if you see a significant difference between the .txt or .tsv file written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the .txt file is 400 MB or 100 MB).}
 
-\item{max.matrix.size}{Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit. Ignored if write.table = FALSE.}
+\item{max.matrix.size}{Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit, or if automatic.downsample = TRUE will downsample the Seurat object instead so that the Reference Matrix output file is under the size limit. Ignored if write.table = FALSE.}
 
 \item{file.name}{Character. The name of the Reference Matrix file written to disk. Must not contain any space. You can specify .txt or .tsv for the output file.}
 
 \item{path}{Character. The path to write the Reference Matrix into. Leave NULL for current working directory.}
 
-\item{write.table}{Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file. If FALSE, only returns the Reference Matrix as a data.frame.}
+\item{write.table}{Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file.}
 }
 \value{
 A data.frame containing the Seurat object's RNA counts, with cell identities as column names and feature names as row names. If write.table = TRUE, a .txt or .tsv file of the data.frame is also written to disk.

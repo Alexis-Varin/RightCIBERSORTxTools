@@ -34,7 +34,7 @@ Reference_Matrix_Sizer = function(
   refmat.size = round(length(seurat_object$RNA@counts)/500000/1.024,2)
 
   if (projected.cell.number > length(colnames(seurat_object)))
-    warning(sprintf("Current estimated Reference Matrix size is %s MB. You do not need to downsample your Seurat object.",refmat.size))
+    warning(sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is %s MB (%s cells by %s features). You do not need to downsample your Seurat object.",refmat.size, length(colnames(seurat_object)), length(rownames(seurat_object))))
 
   else {
     if (isTRUE(downsample)) {
@@ -44,10 +44,11 @@ Reference_Matrix_Sizer = function(
       cell.list = WhichCells(seurat_object, downsample = projected.cell.number)
       Idents(seurat_object) = current.ident
       seurat_object = seurat_object[,cell.list]
-      warning(sprintf("Current estimated Reference Matrix size is %s MB. The Seurat object has been downsampled to %s cells for a Reference Matrix under %s MB.",refmat.size, projected.cell.number, max.matrix.size))
+      warning(sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is %s MB (%s cells by %s features). The Seurat object has been downsampled to %s cells for a Reference Matrix under %s MB.",refmat.size, length(colnames(seurat_object)), length(rownames(seurat_object)), projected.cell.number, max.matrix.size))
     }
     else
-      warning(sprintf("Current estimated Reference Matrix size is %s MB. You may want to downsample your Seurat object to %s cells for a Reference Matrix under %s MB.",refmat.size, projected.cell.number, max.matrix.size))
+      warning(sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is %s MB (%s cells by %s features). You may want to downsample your Seurat object to %s cells for a Reference Matrix under %s MB.",refmat.size, length(colnames(seurat_object)), length(rownames(seurat_object)), projected.cell.number, max.matrix.size))
   }
+
   return(seurat_object)
 }

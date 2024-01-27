@@ -17,7 +17,83 @@ function.
 
     devtools::install_github("Alexis-Varin/RightCIBERSORTxTools")
 
-## CIBERSORTx_Reference_Matrix_Builder
+## Good Practice for CIBERSORTx use
+
+- Building the Reference Matrix takes a lot of time, sometimes up to 30
+  minutes depending on the size of your Seurat object. I recommend to
+  save your environment before running the function.
+
+- Your storage capacity on the CIBERSORTx web portal has a limit of 1 GB
+  (please note that not just uploaded files take disk space but also job
+  results). By experience, if your Seurat object has more than 25,000
+  cells by 20,000 features (or any combination that would produce a
+  matrix length over 500,000,000) your Reference Matrix will be bigger
+  than 1 GB. This is the reason for the various subset and downsample
+  arguments the function has to offer. You can use them to reduce the
+  size of your Seurat object. I also included a failsafe option to stop
+  the function if, before starting to extract the RNA counts, it detects
+  that the Reference Matrix will be over a spêcified size limit. This
+  prevents you from waiting a significant amount of time for nothing.
+
+- While you can always downsample right before building the Reference
+  Matrix with the provided parameters of the Reference Matrix Builder, I
+  very strongly recommend to do it on your Seurat object right after QC
+  and before any downstream analysis (so before normalization,
+  integration, UMAP and FindMarkers) as downsampling after will
+  significantly alter your analysis, especially your differentially
+  expressed genes. I therefore provide a sizing tool to estimate the
+  size of the Reference Matrix that would be built from your Seurat
+  object and suggest a number of cells to downsample from it. You can
+  then use the suggested number of cells to downsample your Seurat
+  object before any downstream analysis or even let the function do it
+  for you.
+
+## Reference_Matrix_Sizer
+
+### Description
+
+This function calculates the size of a Reference Matrix which would be
+built from a Seurat object and suggests a number of cells to downsample
+from the object or performs that downsample to be under a specified size
+limit.
+
+### Dependencies
+
+- Seurat
+- SeuratObject
+
+### Usage
+
+    Reference_Matrix_Sizer(
+      seurat_object,
+      max.matrix.size = 900,
+      downsample = FALSE
+    )
+
+### Arguments
+
+| Argument            | Definition                                                                                                                                                                                                                                                                                                                                                                     |
+|---------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **seurat_object**   | A Seurat object.                                                                                                                                                                                                                                                                                                                                                               |
+| **max.matrix.size** | Numeric. The maximum size of the Reference Matrix file written to disk in MB.                                                                                                                                                                                                                                                                                                  |
+| **downsample**      | Logical. If TRUE, downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Please report an issue if you see a significant difference between the .txt or .tsv file written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the .txt file is 400 MB or 100 MB). |
+
+### Output
+
+The Seurat object, an estimation of the Reference Matrix size in MB and
+a suggestion of the number of cells to downsample. If downsample = TRUE,
+the Seurat object will instead be downsampled to the suggested number of
+cells.
+
+### Example
+
+    Reference_Matrix_Sizer(
+      seurat_object = pbmc1k,
+      max.matrix.size = 20,
+      downsample = FALSE
+    )
+
+## Reference_Matrix_Builder
 
 ### Description
 
@@ -31,7 +107,9 @@ object.
 
 ### Usage
 
-    CIBERSORTx_Reference_Matrix_Builder(
+    library(RightCIBERSORTxTools)
+
+    Reference_Matrix_Builder(
       seurat_object,
       ident.1 = NULL,
       ident.2 = NULL,
@@ -45,6 +123,8 @@ object.
       downsample.object.first = NULL,
       downsample.object.last = NULL,
       downsample.cluster = NULL,
+      automatic.downsample = FALSE,
+      max.matrix.size = 900,
       file.name = "Reference_Matrix.txt",
       path = NULL,
       write.table = FALSE
@@ -52,24 +132,26 @@ object.
 
 ### Arguments
 
-| Argument                    | Definition                                                                                                                                                                                                                                                                                                                |
-|-----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **seurat_object**           | A Seurat object                                                                                                                                                                                                                                                                                                           |
-| **ident.1**                 | Character. The first identity to use (for example “seurat_clusters” or “orig.ident”). Leave NULL if you want to use current identity (active.ident).                                                                                                                                                                      |
-| **ident.2**                 | Character. The second identity to use. This will subset each ident.1 cluster with ident.2 identities (for example if ident.1 is “seurat_clusters” and ident.2 “orig.ident” cluster 0 will be divided into several clusters 0 each corresponding to an orig.ident). Leave NULL if you don’t want to use a second identity. |
-| **double.ident**            | Logical. If TRUE, each cell barcode will be renamed with a double identity (ident.1_ident.2). If FALSE, each cell barcode will be renamed with ident.1. Ignored if ident.2 is NULL.                                                                                                                                       |
-| **sep.double.ident**        | Character. The separator to use between ident.1 and ident.2 if double.ident = TRUE. Ignored if ident.2 is NULL.                                                                                                                                                                                                           |
-| **reverse.double.ident**    | Logical. If TRUE, the order of ident.1 and ident.2 will be reversed when creating the double identity (ident.2_ident.1). Ignored if ident.2 is NULL.                                                                                                                                                                      |
-| **clusters.1**              | Character. The clusters to subset from ident.1. Leave NULL if you want all clusters.                                                                                                                                                                                                                                      |
-| **clusters.1.invert**       | Logical. If TRUE, invert the selection from clusters.1 (if clusters.1 = c(“0”,“1”,“2”) and clusters.1.invert = TRUE, all clusters except 0, 1 and 2 will be selected).                                                                                                                                                    |
-| **clusters.2**              | Character. The clusters to subset from ident.2. Leave NULL if you want all clusters.                                                                                                                                                                                                                                      |
-| **clusters.2.invert**       | Logical. If TRUE, invert the selection from clusters.2.                                                                                                                                                                                                                                                                   |
-| **downsample.object.first** | Numeric. The number of cells to downsample from the Seurat object before subsetting clusters.1 and clusters.2. Leave NULL if you don’t want to downsample.                                                                                                                                                                |
-| **downsample.object.last**  | Numeric. The number of cells to downsample from the Seurat object after subsetting clusters.1 and clusters.2. Leave NULL if you don’t want to downsample.                                                                                                                                                                 |
-| **downsample.cluster**      | Numeric. The number of cells to downsample from each cluster. Will be performed after downsample.object.last. Leave NULL if you don’t want to downsample.                                                                                                                                                                 |
-| **file.name**               | Character. The name of the Reference Matrix file to write. Must not contain any space. You can specify .txt or .tsv for the output file.                                                                                                                                                                                  |
-| **path**                    | Character. The path to write the Reference Matrix into. Leave NULL for current working directory.                                                                                                                                                                                                                         |
-| **write.table**             | Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file. If FALSE, only returns the Reference Matrix as a data.frame.                                                                                                                                                                                 |
+| Argument                    | Definition                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|-----------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **seurat_object**           | A Seurat object.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **ident.1**                 | Character. The first identity to use (for example “seurat_clusters” or “orig.ident”). Leave NULL if you want to use current identity (active.ident).                                                                                                                                                                                                                                                                                                                                     |
+| **ident.2**                 | Character. The second identity to use. This will subset each ident.1 cluster with ident.2 identities (for example if ident.1 is “seurat_clusters” and ident.2 “orig.ident” cluster 0 will be divided into several clusters 0 each corresponding to an orig.ident). Leave NULL if you don’t want to use a second identity.                                                                                                                                                                |
+| **double.ident**            | Logical. If TRUE, each cell barcode will be renamed with a double identity (ident.1_ident.2). If FALSE, each cell barcode will be renamed with ident.1. Ignored if ident.2 is NULL.                                                                                                                                                                                                                                                                                                      |
+| **sep.double.ident**        | Character. The separator to use between ident.1 and ident.2 if double.ident = TRUE. Ignored if ident.2 is NULL.                                                                                                                                                                                                                                                                                                                                                                          |
+| **reverse.double.ident**    | Logical. If TRUE, the order of ident.1 and ident.2 will be reversed when creating the double identity (ident.2_ident.1). Ignored if ident.2 is NULL.                                                                                                                                                                                                                                                                                                                                     |
+| **clusters.1**              | Character. The clusters to subset from ident.1. Leave NULL if you want all clusters.                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **clusters.1.invert**       | Logical. If TRUE, invert the selection from clusters.1 (if clusters.1 = c(“0”,“1”,“2”) and clusters.1.invert = TRUE, all clusters except 0, 1 and 2 will be selected).                                                                                                                                                                                                                                                                                                                   |
+| **clusters.2**              | Character. The clusters to subset from ident.2. Leave NULL if you want all clusters.                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **clusters.2.invert**       | Logical. If TRUE, invert the selection from clusters.2.                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **downsample.object.first** | Numeric. The number of cells to downsample from the Seurat object before subsetting clusters.1 and clusters.2. Leave NULL if you don’t want to downsample.                                                                                                                                                                                                                                                                                                                               |
+| **downsample.object.last**  | Numeric. The number of cells to downsample from the Seurat object after subsetting clusters.1 and clusters.2. Leave NULL if you don’t want to downsample.                                                                                                                                                                                                                                                                                                                                |
+| **downsample.cluster**      | Numeric. The number of cells to downsample from each cluster of ident.1. Will be performed after downsample.object.last. Leave NULL if you don’t want to downsample.                                                                                                                                                                                                                                                                                                                     |
+| **automatic.downsample**    | Logical. If TRUE, automatically downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Performed after all other subset and downsample parameters. Ignored if write.table = FALSE. Please report an issue if you see a significant difference between the .txt or .tsv file written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the .txt file is 400 MB or 100 MB). |
+| **max.matrix.size**         | Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit, or if automatic.downsample = TRUE will downsample the Seurat object instead so that the Reference Matrix output file is under the size limit. Ignored if write.table = FALSE.                                                                                                                      |
+| **file.name**               | Character. The name of the Reference Matrix file to write. Must not contain any space. You can specify .txt or .tsv for the output file.                                                                                                                                                                                                                                                                                                                                                 |
+| **path**                    | Character. The path to write the Reference Matrix into. Leave NULL for current working directory.                                                                                                                                                                                                                                                                                                                                                                                        |
+| **write.table**             | Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file.                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ### Output
 
@@ -79,7 +161,7 @@ TRUE, a .txt or .tsv file of the data.frame is also written to disk.
 
 ### Example
 
-    CIBERSORTx_Reference_Matrix_Builder(
+    Reference_Matrix_Builder(
     seurat_object = pbmc1k,
     ident.1 = "seurat_clusters",
     ident.2 = "orig.ident",
@@ -92,7 +174,7 @@ TRUE, a .txt or .tsv file of the data.frame is also written to disk.
     write.table = TRUE
     )
 
-## CIBERSORTx_Mixture_File_Builder
+## Mixture_File_Builder
 
 ### Description
 
