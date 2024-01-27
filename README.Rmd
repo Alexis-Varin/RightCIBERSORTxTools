@@ -23,7 +23,7 @@ This package provides a set of tools to generate CIBERSORTx input files from RNA
 
 ## Installation
 
-```
+```         
 devtools::install_github("Alexis-Varin/RightCIBERSORTxTools")
 ```
 
@@ -33,6 +33,12 @@ devtools::install_github("Alexis-Varin/RightCIBERSORTxTools")
 
 This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
 
+### Good Practice for CIBERSORTx use
+
+-   Building the Reference Matrix takes a lot of time, sometimes up to 30 minutes depending on the size of your Seurat object. I recommend to save your environment before running the function.
+
+-   Your storage capacity on the CIBERSORTx web portal has a limit of 1 GB (please note that not just uploaded files take disk space but also job results). By experience, if your Seurat object has more than 26,000 cells by 20,000 features (or any combination that would produce a matrix length over 520,000,000) your Reference Matrix will be bigger than 1 GB (you can easily check that in your Seurat object with length(seurat_object$RNA@counts)). This is the reason for the various subset and downsample arguments the function has to offer. You can use them to reduce the size of your Seurat object. I also included a failsafe option to stop the function if, before starting to extract the RNA counts, it detects that the Reference Matrix will be over 1 GB by checking the product of the number of cells by the number of features. This prevents you from waiting a significant amount of time for nothing.
+
 ### Dependencies
 
 -   Seurat
@@ -41,6 +47,8 @@ This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
 ### Usage
 
 ```         
+library(RightCIBERSORTxTools)
+
 CIBERSORTx_Reference_Matrix_Builder(
   seurat_object,
   ident.1 = NULL,
@@ -64,7 +72,7 @@ CIBERSORTx_Reference_Matrix_Builder(
 ### Arguments
 
 | Argument                    | Definition                                                                                                                                                                                                                                                                                                                |
-|-----------------------------------|:------------------------------------|
+|-------------|:----------------------------------------------------------|
 | **seurat_object**           | A Seurat object                                                                                                                                                                                                                                                                                                           |
 | **ident.1**                 | Character. The first identity to use (for example "seurat_clusters" or "orig.ident"). Leave NULL if you want to use current identity (active.ident).                                                                                                                                                                      |
 | **ident.2**                 | Character. The second identity to use. This will subset each ident.1 cluster with ident.2 identities (for example if ident.1 is "seurat_clusters" and ident.2 "orig.ident" cluster 0 will be divided into several clusters 0 each corresponding to an orig.ident). Leave NULL if you don't want to use a second identity. |

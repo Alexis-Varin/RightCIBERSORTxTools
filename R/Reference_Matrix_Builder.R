@@ -1,4 +1,4 @@
-#' @title CIBERSORTx_Reference_Matrix_Builder
+#' @title Reference_Matrix_Builder
 #'
 #' @description This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
 #'
@@ -24,7 +24,7 @@
 #' @return A data.frame containing the Seurat object's RNA counts, with cell identities as column names and feature names as row names. If write.table = TRUE, a .txt or .tsv file of the data.frame is also written to disk.
 #'
 #' @examples
-#' CIBERSORTx_Reference_Matrix_Builder(
+#' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.1 = "seurat_clusters",
 #' clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
@@ -32,14 +32,14 @@
 #' write.table = TRUE
 #' )
 #'
-#' CIBERSORTx_Reference_Matrix_Builder(
+#' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.2 = "seurat_clusters",
 #' downsample.object.first = 300,
 #' write.table = TRUE
 #' )
 #'
-#' CIBERSORTx_Reference_Matrix_Builder(
+#' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.1 = "seurat_clusters",
 #' ident.2 = "orig.ident",
@@ -56,24 +56,25 @@
 #' @import SeuratObject
 #' @export
 
-CIBERSORTx_Reference_Matrix_Builder = function(seurat_object,
-                                               ident.1 = NULL,
-                                               ident.2 = NULL,
-                                               double.ident = TRUE,
-                                               sep.double.ident = "_",
-                                               reverse.double.ident = FALSE,
-                                               clusters.1 = NULL,
-                                               clusters.1.invert = FALSE,
-                                               clusters.2 = NULL,
-                                               clusters.2.invert = FALSE,
-                                               downsample.object.first = NULL,
-                                               downsample.object.last = NULL,
-                                               downsample.cluster = NULL,
-                                               automatic.downsample = FALSE,
-                                               max.matrix.size = 1000,
-                                               file.name = "Reference_Matrix.txt",
-                                               path = NULL,
-                                               write.table = FALSE) {
+Reference_Matrix_Builder = function(
+    seurat_object,
+    ident.1 = NULL,
+    ident.2 = NULL,
+    double.ident = TRUE,
+    sep.double.ident = "_",
+    reverse.double.ident = FALSE,
+    clusters.1 = NULL,
+    clusters.1.invert = FALSE,
+    clusters.2 = NULL,
+    clusters.2.invert = FALSE,
+    downsample.object.first = NULL,
+    downsample.object.last = NULL,
+    downsample.cluster = NULL,
+    automatic.downsample = FALSE,
+    max.matrix.size = 900,
+    file.name = "Reference_Matrix.txt",
+    path = NULL,
+    write.table = FALSE) {
 
   if (is.null(ident.2) & is.character(clusters.2))
     stop("You must provide an ident.2 to subset clusters.2 from")
