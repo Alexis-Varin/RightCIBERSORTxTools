@@ -32,21 +32,20 @@ function.
   arguments the function has to offer. You can use them to reduce the
   size of your Seurat object. I also included a failsafe option to stop
   the function if, before starting to extract the RNA counts, it detects
-  that the Reference Matrix will be over a spêcified size limit. This
+  that the Reference Matrix will be over the specified size limit. This
   prevents you from waiting a significant amount of time for nothing.
 
 - While you can always downsample right before building the Reference
   Matrix with the provided parameters of the Reference Matrix Builder, I
-  very strongly recommend to do it on your Seurat object right after QC
-  and before any downstream analysis (so before normalization,
-  integration, UMAP and FindMarkers) as downsampling after will
-  significantly alter your analysis, especially your differentially
-  expressed genes. I therefore provide a sizing tool to estimate the
-  size of the Reference Matrix that would be built from your Seurat
-  object and suggest a number of cells to downsample from it. You can
-  then use the suggested number of cells to downsample your Seurat
-  object before any downstream analysis or even let the function do it
-  for you.
+  strongly recommend to do it on your Seurat object right after QC and
+  before any downstream analysis (so before normalization, integration,
+  UMAP, FindMarkers etc) as downsampling after will significantly alter
+  your analysis, especially your differentially expressed genes. I
+  therefore provide a sizing tool to estimate the size of the Reference
+  Matrix that would be built from your Seurat object and suggest a
+  number of cells to downsample from it. You can then use the suggested
+  number of cells to downsample your Seurat object before any downstream
+  analysis or even let the function do it for you.
 
 ## Reference_Matrix_Sizer
 
@@ -82,8 +81,7 @@ limit.
 
 The Seurat object, an estimation of the Reference Matrix size in MB and
 a suggestion of the number of cells to downsample. If downsample = TRUE,
-the Seurat object will instead be downsampled to the suggested number of
-cells.
+the Seurat object will be downsampled to the suggested number of cells.
 
 ### Example
 
@@ -106,8 +104,6 @@ object.
 - SeuratObject
 
 ### Usage
-
-    library(RightCIBERSORTxTools)
 
     Reference_Matrix_Builder(
       seurat_object,
