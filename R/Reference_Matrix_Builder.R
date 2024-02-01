@@ -160,7 +160,7 @@ Reference_Matrix_Builder = function(
       seurat_object = seurat_object[,cell.list]
     }
 
-  refmat = as.data.frame(seurat_object$RNA@counts)
+  refmat = as.data.frame(seurat_object[["RNA"]]$counts)
   colnames(refmat) = seurat_object@active.ident
 
   if (isTRUE(write.table)) {
