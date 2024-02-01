@@ -30,8 +30,8 @@ Reference_Matrix_Sizer = function(
     max.matrix.size = 900,
     downsample = FALSE) {
 
-  projected.cell.number = trunc(490000/1.024*max.matrix.size/length(rownames(seurat_object$RNA@counts)))
-  refmat.size = trunc(length(seurat_object$RNA@counts)/490000/1.024)
+  projected.cell.number = trunc(490000/1.024*max.matrix.size/length(rownames(seurat_object[["RNA"]]$counts)))
+  refmat.size = trunc(length(seurat_object[["RNA"]]$counts)/490000/1.024)
 
   if (projected.cell.number > length(colnames(seurat_object)))
     sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is between %s and %s MB (%s cells by %s features). You do not need to downsample your Seurat object.",refmat.size, refmat.size*1.05, length(colnames(seurat_object)), length(rownames(seurat_object)))
@@ -44,7 +44,7 @@ Reference_Matrix_Sizer = function(
       cell.list = WhichCells(seurat_object, downsample = projected.cell.number)
       Idents(seurat_object) = current.ident
       seurat_object = seurat_object[,cell.list]
-      sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is between %s and %s MB (%s cells by %s features). The Seurat object has been downsampled to %s cells for a Reference Matrix under %s MB.",refmat.size, refmat.isze*1.05, length(colnames(seurat_object)), length(rownames(seurat_object)), projected.cell.number, max.matrix.size)
+      sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is between %s and %s MB (%s cells by %s features). The Seurat object has been downsampled to %s cells for a Reference Matrix under %s MB.",refmat.size, refmat.size*1.05, length(colnames(seurat_object)), length(rownames(seurat_object)), projected.cell.number, max.matrix.size)
     }
     else
       sprintf("Current estimated Reference Matrix size on CIBERSORTx web portal is between %s and %s MB (%s cells by %s features). You may want to downsample your Seurat object to %s cells for a Reference Matrix under %s MB.",refmat.size, refmat.size*1.05, length(colnames(seurat_object)), length(rownames(seurat_object)), projected.cell.number, max.matrix.size)

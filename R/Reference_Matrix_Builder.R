@@ -146,12 +146,12 @@ Reference_Matrix_Builder = function(
   if (isFALSE(double.ident))
     Idents(seurat_object) = "ident.1"
 
-  if (length(seurat_object$RNA@counts) > 490000*max.matrix.size/1.024 & isTRUE(write.table))
+  if (length(seurat_object[["RNA"]]$counts) > 490000*max.matrix.size/1.024 & isTRUE(write.table))
     if (isFALSE(automatic.downsample))
-      stop(sprintf("The Reference Matrix output file is projected to be over your size limit of %s MB on CIBERSORTx web portal (%s cells by %s features), please subset clusters, downsample the number of cells or set automatic.downsample = TRUE",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts))))
+      stop(sprintf("The Reference Matrix output file is projected to be over your size limit of %s MB on CIBERSORTx web portal (%s cells by %s features), please subset clusters, downsample the number of cells or set automatic.downsample = TRUE",max.matrix.size,length(colnames(seurat_object[["RNA"]]$counts)),length(rownames(seurat_object[["RNA"]]$counts))))
     else {
-      projected.cell.number = trunc(490000/1.024*max.matrix.size/length(rownames(seurat_object$RNA@counts)))
-      warning(sprintf("The Reference Matrix output file is projected to be over your size limit of %s MB on CIBERSORTx web portal (%s cells by %s features), automatically downsampling to %s cells to be under the size limit",max.matrix.size,length(colnames(seurat_object$RNA@counts)),length(rownames(seurat_object$RNA@counts)),projected.cell.number))
+      projected.cell.number = trunc(490000/1.024*max.matrix.size/length(rownames(seurat_object[["RNA"]]$counts)))
+      warning(sprintf("The Reference Matrix output file is projected to be over your size limit of %s MB on CIBERSORTx web portal (%s cells by %s features), automatically downsampling to %s cells to be under the size limit",max.matrix.size,length(colnames(seurat_object[["RNA"]]$counts)),length(rownames(seurat_object[["RNA"]]$counts)),projected.cell.number))
       current.ident = Idents(seurat_object)
       seurat_object@meta.data$seurat_object3 = "seurat_object3"
       Idents(seurat_object) = "seurat_object3"
