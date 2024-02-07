@@ -185,10 +185,11 @@ Reference_Matrix_Builder = function(
   if (inherits(seurat_object[[assay]],"Assay5")) {
     if (isTRUE(verbose))
       cat("Joining layers...","\n")
-    seurat_object[[assay]] = JoinLayers(seurat_object[[assay]])
+    seurat_object2 = seurat_object
+    seurat_object2[[assay]] = JoinLayers(seurat_object2[[assay]])
     if (isTRUE(verbose))
       cat("Extracting the expression matrix...","\n")
-    refmat = LayerData(seurat_object, assay = assay, layer = layer)
+    refmat = LayerData(seurat_object2, assay = assay, layer = layer)
   }
   else {
     if (isTRUE(verbose))

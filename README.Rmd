@@ -115,22 +115,22 @@ A data.table containing the Seurat object's RNA counts or any other specified as
 
 ```         
 Reference_Matrix_Builder(
-seurat_object = pbmc1k,
-ident.1 = "seurat_clusters",
-ident.2 = "orig.ident",
-double.ident = FALSE,
-clusters.1 = c("Cluster.7","Cluster.14"),
-clusters.1.invert = TRUE,
-clusters.2 = "IMMUNE_CTRL",
-clusters.2.invert = TRUE,
-file.name = "STIM_Reference_Matrix.tsv",
-write.table = TRUE
+    seurat_object = pbmc1k,
+    ident.1 = "seurat_clusters",
+    ident.2 = "orig.ident",
+    double.ident = FALSE,
+    clusters.1 = c("Cluster.7","Cluster.14"),
+    clusters.1.invert = TRUE,
+    clusters.2 = "IMMUNE_CTRL",
+    clusters.2.invert = TRUE,
+    file.name = "STIM_Reference_Matrix.tsv",
+    write.table = TRUE
 )
 
 Reference_Matrix_Builder(
-  seurat_object = pbmc1k,
-  check.size = TRUE,
-  max.matrix.size = 20,
+    seurat_object = pbmc1k,
+    check.size = TRUE,
+    max.matrix.size = 20,
 )
 ```
 
