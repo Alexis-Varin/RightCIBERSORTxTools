@@ -6,6 +6,8 @@
 \usage{
 Reference_Matrix_Builder(
   seurat_object,
+  assay = "RNA",
+  layer = "counts",
   ident.1 = NULL,
   ident.2 = NULL,
   double.ident = TRUE,
@@ -19,18 +21,27 @@ Reference_Matrix_Builder(
   downsample.object.last = NULL,
   downsample.cluster = NULL,
   automatic.downsample = FALSE,
+  check.size = FALSE,
   max.matrix.size = 900,
-  file.name = "Reference_Matrix.txt",
+  cell.barcodes = FALSE,
+  file.name = "Reference_Matrix",
+  file.format = "txt",
+  file.sep = "\\t",
   path = NULL,
-  write.table = FALSE
+  write = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
-\item{seurat_object}{A Seurat object.}
+\item{seurat_object}{A Seurat object, created with Seurat v4 or v5.}
+
+\item{assay}{Character. If the Seurat object contains multiple RNA assays, you may specify which one to use (for example "RNA2" if you have created a second RNA assay you named "RNA2". See Seurat v5 vignettes for more information). You may also use another assay such as SCT if you want to extract an expression matrix of this assay for projects other than CIBERSORTx. Must be RNA assay for CIBERSORTx.}
+
+\item{layer}{Character. Formerly known as slot. You can specify a layer such as "data" (normalized counts) or any other present in the Seurat object's assay if you want to extract the expression matrix of this layer for projects other than CIBERSORTx. If you have split layers the function will always join them before extracting the expression matrix. Must be counts layer for CIBERSORTx.}
 
 \item{ident.1}{Character. The first identity to use (for example "seurat_clusters" or "orig.ident"). Leave NULL if you want to use current identity (active.ident).}
 
-\item{ident.2}{Character. The second identity to use. This will subset each ident.1 cluster with ident.2 identities (for example if ident.1 is "seurat_clusters" and ident.2 "orig.ident" cluster 0 will be divided into several clusters 0 each corresponding to an orig.ident). Leave NULL if you don't want to use a second identity.}
+\item{ident.2}{Character. The second identity to use. This will subset each ident.1 cluster with ident.2 identities (for example if ident.1 is "seurat_clusters" and ident.2 "orig.ident" cluster 0 will be divided into several clusters 0 each corresponding to an orig.ident, 0_sample1, 0_sample2 etc). Leave NULL if you don't want to use a second identity.}
 
 \item{double.ident}{Logical. If TRUE, each cell barcode will be renamed with a double identity (ident.1_ident.2). If FALSE, each cell barcode will be renamed with ident.1. Ignored if ident.2 is NULL.}
 
@@ -46,24 +57,34 @@ Reference_Matrix_Builder(
 
 \item{clusters.2.invert}{Logical. If TRUE, invert the selection from clusters.2.}
 
-\item{downsample.object.first}{Numeric. The number of cells to downsample from the Seurat object before subsetting clusters.1 and clusters.2. Leave NULL if you don't want to downsample.}
+\item{downsample.object.first}{Numeric. The number of cells to downsample from the entire Seurat object (not each cluster) before subsetting clusters.1 and clusters.2. Leave NULL if you don't want to downsample.}
 
-\item{downsample.object.last}{Numeric. The number of cells to downsample from the Seurat object after subsetting clusters.1 and clusters.2. Leave NULL if you don't want to downsample.}
+\item{downsample.object.last}{Numeric. The number of cells to downsample from the entire Seurat object after subsetting clusters.1 and clusters.2. Leave NULL if you don't want to downsample.}
 
 \item{downsample.cluster}{Numeric. The number of cells to downsample from each cluster of ident.1. Will be performed after downsample.object.last. Leave NULL if you don't want to downsample.}
 
-\item{automatic.downsample}{Logical. If TRUE, automatically downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Performed after all other subset and downsample parameters. Ignored if write.table = FALSE. Please report an issue if you see a significant difference between the .txt or .tsv file written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the .txt file is 400 MB or 100 MB).}
+\item{automatic.downsample}{Logical. If TRUE, automatically downsample the Seurat object so that the Reference Matrix file written to disk would be just under the max.matrix.size limit (empirical). Performed after all other subset and downsample parameters. Ignored if check.size = FALSE and write = FALSE. Please report an issue if you see a significant difference between the file size written to disk and max.matrix.size (for example max.matrix.size is set to 200 MB but the file is 400 MB or 100 MB).}
 
-\item{max.matrix.size}{Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit, or if automatic.downsample = TRUE will downsample the Seurat object instead so that the Reference Matrix output file is under the size limit. Ignored if write.table = FALSE.}
+\item{check.size}{Logical. If TRUE, will return the Seurat object and print the estimated size of the Reference Matrix file written to disk and the number of cells to downsample. If automatic.downsample = TRUE will perform the downsample and return the Seurat object.}
 
-\item{file.name}{Character. The name of the Reference Matrix file written to disk. Must not contain any space. You can specify .txt or .tsv for the output file.}
+\item{max.matrix.size}{Numeric. The maximum size of the Reference Matrix file written to disk in MB. Will stop the function if the Reference Matrix file written to disk is estimated to be over this limit, or if automatic.downsample = TRUE will downsample the Seurat object instead so that the Reference Matrix output file is under the size limit. Ignored if check.size = FALSE and write = FALSE.}
 
-\item{path}{Character. The path to write the Reference Matrix into. Leave NULL for current working directory.}
+\item{cell.barcodes}{Logical. If TRUE, keep the cell barcodes and does not rename with cell identities, if you want to extract the expression matrix for projects other than CIBERSORTx. Must be FALSE for CIBERSORTx.}
 
-\item{write.table}{Logical. If TRUE, write to disk the Reference Matrix as a .txt or .tsv file.}
+\item{file.name}{Character. The name of the Reference Matrix file written to disk. Must not contain any space. Ignored if write = FALSE.}
+
+\item{file.format}{Character. The format of the Reference Matrix file written to disk. Must be txt or tsv for CIBERSORTx but you can also specify csv for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any format the data.table::fwrite function would accept. Ignored if write = FALSE.}
+
+\item{file.sep}{Character. The separator to use in the Reference Matrix file written to disk. Must be Tabulation for CIBERSORTx but you can also specify a comma for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any separator the data.table::fwrite function would accept. Ignored if write = FALSE.}
+
+\item{path}{Character. The path to write the Reference Matrix into. Leave NULL for current working directory. Ignored if write = FALSE.}
+
+\item{write}{Logical. If TRUE, write to disk the Reference Matrix file.}
+
+\item{verbose}{Logical. If FALSE, does not print progress messages and output, but warnings and errors will still be printed.}
 }
 \value{
-A data.frame containing the Seurat object's RNA counts, with cell identities as column names and feature names as row names. If write.table = TRUE, a .txt or .tsv file of the data.frame is also written to disk.
+A data.table containing the Seurat object's RNA counts or any other specified assay layer, with cell identities or barcodes as column names and feature names as first column. If write = TRUE, the data.table is also written to disk. If check.size = TRUE, will instead return the Seurat object.
 }
 \description{
 This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
@@ -73,15 +94,13 @@ Reference_Matrix_Builder(
 seurat_object = pbmc1k,
 ident.1 = "seurat_clusters",
 clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
-file.name = "Reference_Matrix_1.txt",
-write.table = TRUE
+file.name = "Reference_Matrix_1",
 )
 
 Reference_Matrix_Builder(
 seurat_object = pbmc1k,
 ident.2 = "seurat_clusters",
 downsample.object.first = 300,
-write.table = TRUE
 )
 
 Reference_Matrix_Builder(
@@ -93,8 +112,14 @@ clusters.1 = c("Cluster.7","Cluster.14"),
 clusters.1.invert = TRUE,
 clusters.2 = "IMMUNE_CTRL",
 clusters.2.invert = TRUE,
-file.name = "STIM_Reference_Matrix.tsv",
-write.table = TRUE
+file.name = "STIM_Reference_Matrix",
+file.format = "tsv",
+)
+
+Reference_Matrix_Builder(
+seurat_object = pbmc1k,
+check.size = TRUE,
+max.matrix.size = 20,
 )
 
 }
