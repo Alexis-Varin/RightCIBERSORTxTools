@@ -135,8 +135,8 @@ Seurat object.
         clusters.1.invert = TRUE,
         clusters.2 = "IMMUNE_CTRL",
         clusters.2.invert = TRUE,
-        file.name = "STIM_Reference_Matrix.tsv",
-        write.table = TRUE
+        file.name = "STIM_Reference_Matrix",
+        file.format = "tsv",
     )
 
     Reference_Matrix_Builder(
