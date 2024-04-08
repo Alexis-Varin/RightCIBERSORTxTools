@@ -1,6 +1,6 @@
 Package: RightCIBERSORTxTools
 Title: Reference Matrix And Mixture File Builder For CIBERSORTx
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     person("Alexis", "Varin", , "alexis.varin@inserm.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0001-3474-7263"))
