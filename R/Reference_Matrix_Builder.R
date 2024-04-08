@@ -24,25 +24,27 @@
 #' @param file.name Character. The name of the Reference Matrix file written to disk. Must not contain any space. Ignored if write = FALSE.
 #' @param file.format Character. The format of the Reference Matrix file written to disk. Must be txt or tsv for CIBERSORTx but you can also specify csv for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any format the data.table::fwrite function would accept. Ignored if write = FALSE.
 #' @param file.sep Character. The separator to use in the Reference Matrix file written to disk. Must be Tabulation for CIBERSORTx but you can also specify a comma for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any separator the data.table::fwrite function would accept. Ignored if write = FALSE.
-#' @param path Character. The path to write the Reference Matrix into. Leave NULL for current working directory. Ignored if write = FALSE.
+#' @param write.path Character. The path to write the Reference Matrix into. Leave NULL for current working directory. Ignored if write = FALSE.
 #' @param write Logical. If TRUE, write to disk the Reference Matrix file.
 #' @param verbose Logical. If FALSE, does not print progress messages and output, but warnings and errors will still be printed.
 #'
 #' @return A data.table containing the Seurat object's RNA counts or any other specified assay layer, with cell identities or barcodes as column names and feature names as first column. If write = TRUE, the data.table is also written to disk. If check.size = TRUE, will instead return the Seurat object.
 #'
 #' @examples
+#'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.1 = "seurat_clusters",
 #' clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
-#' file.name = "Reference_Matrix_1",
-#' )
+#' write = FALSE
+#' )[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.2 = "seurat_clusters",
 #' downsample.object.first = 300,
-#' )
+#' write = FALSE
+#' )[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
@@ -53,9 +55,8 @@
 #' clusters.1.invert = TRUE,
 #' clusters.2 = "IMMUNE_CTRL",
 #' clusters.2.invert = TRUE,
-#' file.name = "STIM_Reference_Matrix",
-#' file.format = "tsv",
-#' )
+#' write = FALSE
+#' )[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
@@ -91,7 +92,7 @@ Reference_Matrix_Builder = function(
     file.name = "Reference_Matrix",
     file.format = "txt",
     file.sep = "\t",
-    path = NULL,
+    write.path = NULL,
     write = TRUE,
     verbose = TRUE) {
 
@@ -333,15 +334,15 @@ Reference_Matrix_Builder = function(
     colnames(refmat) = c("Gene", as.character(seurat_object@active.ident))
 
   if (isTRUE(write)) {
-    if(is.null(path))
-      path = getwd()
+    if(is.null(write.path))
+      write.path = getwd()
     if (isTRUE(grepl(" ",file.name))) {
       warning("The file name contains one or several spaces, renaming with underscores as CIBERSORTx will otherwise report an error with the Reference Matrix...",immediate. = T)
       file.name = gsub(" ","_",file.name)
     }
     if (isTRUE(verbose))
       cat("Writing to disk...","\n")
-    fwrite(refmat, file = paste0(path,"/",file.name,".",file.format), sep = file.sep, quote = F, row.names = F)
+    fwrite(refmat, file = paste0(write.path,"/",file.name,".",file.format), sep = file.sep, quote = F)
   }
 
   if (isTRUE(verbose))

@@ -27,7 +27,7 @@ Reference_Matrix_Builder(
   file.name = "Reference_Matrix",
   file.format = "txt",
   file.sep = "\\t",
-  path = NULL,
+  write.path = NULL,
   write = TRUE,
   verbose = TRUE
 )
@@ -77,7 +77,7 @@ Reference_Matrix_Builder(
 
 \item{file.sep}{Character. The separator to use in the Reference Matrix file written to disk. Must be Tabulation for CIBERSORTx but you can also specify a comma for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any separator the data.table::fwrite function would accept. Ignored if write = FALSE.}
 
-\item{path}{Character. The path to write the Reference Matrix into. Leave NULL for current working directory. Ignored if write = FALSE.}
+\item{write.path}{Character. The path to write the Reference Matrix into. Leave NULL for current working directory. Ignored if write = FALSE.}
 
 \item{write}{Logical. If TRUE, write to disk the Reference Matrix file.}
 
@@ -90,18 +90,20 @@ A data.table containing the Seurat object's RNA counts or any other specified as
 This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
 }
 \examples{
+
 Reference_Matrix_Builder(
 seurat_object = pbmc1k,
 ident.1 = "seurat_clusters",
 clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
-file.name = "Reference_Matrix_1",
-)
+write = FALSE
+)[1:5,1:5]
 
 Reference_Matrix_Builder(
 seurat_object = pbmc1k,
 ident.2 = "seurat_clusters",
 downsample.object.first = 300,
-)
+write = FALSE
+)[1:5,1:5]
 
 Reference_Matrix_Builder(
 seurat_object = pbmc1k,
@@ -112,9 +114,8 @@ clusters.1 = c("Cluster.7","Cluster.14"),
 clusters.1.invert = TRUE,
 clusters.2 = "IMMUNE_CTRL",
 clusters.2.invert = TRUE,
-file.name = "STIM_Reference_Matrix",
-file.format = "tsv",
-)
+write = FALSE
+)[1:5,1:5]
 
 Reference_Matrix_Builder(
 seurat_object = pbmc1k,
