@@ -36,15 +36,13 @@
 #' seurat_object = pbmc1k,
 #' ident.1 = "seurat_clusters",
 #' clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
-#' write = FALSE
-#' )[1:5,1:5]
+#' write = FALSE)[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' ident.2 = "seurat_clusters",
 #' downsample.object.first = 300,
-#' write = FALSE
-#' )[1:5,1:5]
+#' write = FALSE)[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
@@ -55,14 +53,12 @@
 #' clusters.1.invert = TRUE,
 #' clusters.2 = "IMMUNE_CTRL",
 #' clusters.2.invert = TRUE,
-#' write = FALSE
-#' )[1:5,1:5]
+#' write = FALSE)[1:5,1:5]
 #'
 #' Reference_Matrix_Builder(
 #' seurat_object = pbmc1k,
 #' check.size = TRUE,
-#' max.matrix.size = 20,
-#' )
+#' max.matrix.size = 20)
 #'
 #' @import Seurat
 #' @import SeuratObject

@@ -20,3 +20,5 @@ Depends:
     R (>= 2.10)
 LazyData: true
 LazyDataCompression: xz
+BugReports: https://github.com/Alexis-Varin/RightCIBERSORTxTools/issues
+URL: https://github.com/Alexis-Varin/RightCIBERSORTxTools

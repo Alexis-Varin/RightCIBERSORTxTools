@@ -38,10 +38,3 @@ A data.table containing the counts of the objects and/or files provided, with ea
 \description{
 This function builds a Mixture File for CIBERSORTx from bulk RNA-seq and/or microarray files and/or R objects.
 }
-\examples{
-
-# Example 1: Using objects
-
-
-
-}

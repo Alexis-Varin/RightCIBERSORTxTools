@@ -13,12 +13,6 @@
 #'
 #' @return A data.table containing the counts of the objects and/or files provided, with each column being a sample. If write = TRUE, the data.table is also written to disk.
 #'
-#' @examples
-#'
-#' # Example 1: Using objects
-#'
-#'
-#'
 #' @import data.table
 #' @export
 
