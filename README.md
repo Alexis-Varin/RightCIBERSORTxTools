@@ -122,9 +122,9 @@ A data.table containing the Seurat object’s RNA counts or any other
 specified assay layer, with cell identities or barcodes as column names
 and feature names as first column. If write = TRUE, the data.table is
 also written to disk. If check.size = TRUE, will instead return the
-Seurat object.
+Seurat object and an estimation of the Reference Matrix’s size on disk.
 
-### Example
+### Examples
 
     Reference_Matrix_Builder(
         seurat_object = pbmc1k,
@@ -155,7 +155,43 @@ This function builds a Mixture File for CIBERSORTx from one or several
 .txt or .csv files containing CPM of bulk RNA-seq or microarray
 experiments.
 
-TBD
+### Dependencies
+
+- data.table
+
+### Usage
+
+    Mixture_File_Builder = function(
+        objects = NULL,
+        files.path = NULL,
+        file.name = "Mixture_File",
+        file.format = "txt",
+        file.sep = "\t",
+        write.path = NULL,
+        write = TRUE,
+        verbose = TRUE
+    )
+
+### Arguments
+
+| Argument        | Definition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **objects**     | A data.frame, data.table or matrix object or a mixed list of data.frame, data.table and/or matrix objects corresponding to bulk RNA-seq and/or microarray experiments, with genes as rows and gene names as row names or first column. A single object may contain multiple samples and/or experiments as columns as long as it contains a single gene names column as first column or gene names as row names (e.g. gene sample1 sample2 sample3 etc). You may mix objects with different gene order and number (e.g. an object containing 13567 genes and another with 18458 genes). |
+| **files.path**  | Character. The path to read txt, csv and/or tsv files corresponding to bulk RNA-seq or microarray experiments, with genes as rows and gene names as first column. A single file may contain multiple samples and/or experiments as columns as long as it contains a single gene names column as first column. You may mix files with different gene order and number.                                                                                                                                                                                                                  |
+| **file.name**   | Character. The name of the Mixture File file written to disk. Must not contain any space. Ignored if write = FALSE.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **file.format** | Character. The format of the Mixture File file written to disk. Must be txt or tsv for CIBERSORTx but you can also specify csv for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any format the data.table::fwrite function would accept. Ignored if write = FALSE.                                                                                                                                                                                                                                                                  |
+| **file.sep**    | Character. The separator to use in the Mixture File file written to disk. Must be Tabulation for CIBERSORTx but you can also specify a comma for example if you want to extract the expression matrix for projects other than CIBERSORTx. Accept any separator the data.table::fwrite function would accept. Ignored if write = FALSE.                                                                                                                                                                                                                                                 |
+| **write.path**  | Character. The path to write the Mixture File into. Leave NULL for current working directory. Ignored if write = FALSE.                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **write**       | Logical. If TRUE, write to disk the Mixture File file.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **verbose**     | Logical. If FALSE, does not print progress messages and output, but warnings and errors will still be printed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+
+### Output
+
+A data.table containing the counts of the objects and/or files provided,
+with each column being a sample. If write = TRUE, the data.table is also
+written to disk.
+
+### Examples
 
 ## About the Author
 

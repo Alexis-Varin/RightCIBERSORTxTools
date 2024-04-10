@@ -16,7 +16,7 @@ Mixture_File_Builder(
 )
 }
 \arguments{
-\item{objects}{A data.frame, data.table or matrix object or a mixed list of data.frame, data.table or matrix objects corresponding to bulk RNA-seq or microarray experiments, with genes as rows and gene names as row names or first column. A single object may contain multiple samples and/or experiments as columns as long as it contains a single gene names column as first column or gene names as row names (e.g. | gene | sample1 | sample2 | sample3 | etc). You may mix objects with different gene order and number (e.g. an object containing 13567 genes and another with 18458 genes).}
+\item{objects}{A data.frame, data.table or matrix object or a mixed list of data.frame, data.table and/or matrix objects corresponding to bulk RNA-seq and/or microarray experiments, with genes as rows and gene names as row names or first column. A single object may contain multiple samples and/or experiments as columns as long as it contains a single gene names column as first column or gene names as row names (e.g. | gene | sample1 | sample2 | sample3 | etc). You may mix objects with different gene order and number (e.g. an object containing 13567 genes and another with 18458 genes).}
 
 \item{files.path}{Character. The path to read txt, csv and/or tsv files corresponding to bulk RNA-seq or microarray experiments, with genes as rows and gene names as first column. A single file may contain multiple samples and/or experiments as columns as long as it contains a single gene names column as first column. You may mix files with different gene order and number.}
 
@@ -33,7 +33,7 @@ Mixture_File_Builder(
 \item{verbose}{Logical. If FALSE, does not print progress messages and output, but warnings and errors will still be printed.}
 }
 \value{
-A Mixture File for CIBERSORTx
+A data.table containing the counts of the objects and/or files provided, with each column being a sample. If write = TRUE, the data.table is also written to disk.
 }
 \description{
 This function builds a Mixture File for CIBERSORTx from bulk RNA-seq and/or microarray files and/or R objects.
@@ -41,6 +41,7 @@ This function builds a Mixture File for CIBERSORTx from bulk RNA-seq and/or micr
 \examples{
 
 # Example 1: Using objects
+
 
 
 }

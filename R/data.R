@@ -12,4 +12,7 @@
 #'  }
 #'
 #' @source <https://satijalab.org/seurat/archive/v3.0/immune_alignment.html>
+#'
+#' @import Seurat
+#' @import SeuratObject
 "pbmc1k"
