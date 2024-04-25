@@ -90,33 +90,29 @@ A data.table containing the Seurat object's RNA counts or any other specified as
 This function builds a Reference Matrix for CIBERSORTx from a Seurat object.
 }
 \examples{
+library(Seurat)
+
+# Original object from SeuratObject:
+
+pbmc_small
+
+# Example 1:
 
 Reference_Matrix_Builder(
-seurat_object = pbmc1k,
-ident.1 = "seurat_clusters",
-clusters.1 = c("Cluster.0","Cluster.4","Cluster.5"),
-write = FALSE)[1:5,1:5]
-
-Reference_Matrix_Builder(
-seurat_object = pbmc1k,
-ident.2 = "seurat_clusters",
-downsample.object.first = 300,
-write = FALSE)[1:5,1:5]
-
-Reference_Matrix_Builder(
-seurat_object = pbmc1k,
-ident.1 = "seurat_clusters",
-ident.2 = "orig.ident",
-double.ident = FALSE,
-clusters.1 = c("Cluster.7","Cluster.14"),
+seurat_object = pbmc_small,
+ident.1 = "letter.idents",
+ident.2 = "groups",
+downsample.object.first = 60,
+clusters.1 = c("A"),
 clusters.1.invert = TRUE,
-clusters.2 = "IMMUNE_CTRL",
-clusters.2.invert = TRUE,
-write = FALSE)[1:5,1:5]
+clusters.2 = c("g2"),
+write = FALSE)
+
+# Example 2:
 
 Reference_Matrix_Builder(
-seurat_object = pbmc1k,
+seurat_object = pbmc_small,
 check.size = TRUE,
-max.matrix.size = 20)
+max.matrix.size = 0.03)
 
 }

@@ -127,22 +127,19 @@ Seurat object and an estimation of the Reference Matrix’s size on disk.
 ### Examples
 
     Reference_Matrix_Builder(
-        seurat_object = pbmc1k,
-        ident.1 = "seurat_clusters",
-        ident.2 = "orig.ident",
-        double.ident = FALSE,
-        clusters.1 = c("Cluster.7","Cluster.14"),
+        seurat_object = pbmc_small,
+        ident.1 = "letter.idents",
+        ident.2 = "groups",
+        downsample.object.first = 60,
+        clusters.1 = c("A"),
         clusters.1.invert = TRUE,
-        clusters.2 = "IMMUNE_CTRL",
-        clusters.2.invert = TRUE,
-        file.name = "STIM_Reference_Matrix",
-        file.format = "tsv",
+        clusters.2 = c("g2"),
         write = FALSE)
 
     Reference_Matrix_Builder(
-        seurat_object = pbmc1k,
+        seurat_object = pbmc_small,
         check.size = TRUE,
-        max.matrix.size = 20,
+        max.matrix.size = 0.03,
         write = FALSE)
 
 ## Mixture_File_Builder
