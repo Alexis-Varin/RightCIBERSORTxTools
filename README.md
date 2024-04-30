@@ -213,4 +213,4 @@ the citation information below :
 
 Varin A (2024). RightCIBERSORTxTools: An R Package to Generate
 CIBERSORTx Input Files from RNA-Seq Data. Zenodo.
-<https://doi.org/10.5281/zenodo.11091473>
+<https://doi.org/10.5281/zenodo.11091472>
