@@ -4,6 +4,8 @@
 # RightCIBERSORTxTools
 
 <!-- badges: start -->
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11091473.svg)](https://doi.org/10.5281/zenodo.11091473)
 <!-- badges: end -->
 
 This package provides a set of tools to generate CIBERSORTx input files
@@ -209,4 +211,6 @@ Bâtiment B3 Médecine
 If you find this package useful and would like to cite it, please find
 the citation information below :
 
-TBD
+Varin A (2024). RightCIBERSORTxTools: An R Package to Generate
+CIBERSORTx Input Files from RNA-Seq Data. Zenodo.
+<https://doi.org/10.5281/zenodo.11091473>

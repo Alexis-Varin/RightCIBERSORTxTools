@@ -88,16 +88,19 @@ Reference_Matrix_Builder = function(
     write = TRUE,
     verbose = TRUE) {
 
-  if (isTRUE(verbose))
+  if (isTRUE(verbose)) {
     cat("Starting...","\n")
+  }
 
-  if (is.null(ident.2) & is.character(clusters.2))
+  if (is.null(ident.2) & is.character(clusters.2)) {
     stop("You must provide an ident.2 to subset clusters.2 from")
+  }
 
   to.put.back = Idents(seurat_object)
 
-  if (is.character(ident.1))
+  if (is.character(ident.1)) {
     Idents(seurat_object) = ident.1
+  }
 
   seurat_object@meta.data$ident.1 = Idents(seurat_object)
 
@@ -106,21 +109,27 @@ Reference_Matrix_Builder = function(
     Idents(seurat_object) = ident.2
     seurat_object@meta.data$ident.2 = Idents(seurat_object)
     checkident.2 = Idents(seurat_object)
-    if (checkident.1[1] == checkident.2[1])
+    if (checkident.1[1] == checkident.2[1]) {
       stop("ident.1 and ident.2 or seurat_object@active.ident and ident.2 are the same, please choose different identities")
-    if (isTRUE(reverse.double.ident))
+    }
+    if (isTRUE(reverse.double.ident)) {
       seurat_object@meta.data$double.ident = paste(checkident.2,checkident.1,sep = sep.double.ident)
-    else seurat_object@meta.data$double.ident = paste(checkident.1,checkident.2,sep = sep.double.ident)
+    }
+    else {
+      seurat_object@meta.data$double.ident = paste(checkident.1,checkident.2,sep = sep.double.ident)
+    }
     Idents(seurat_object) = "double.ident"
   }
 
   gc(verbose = F)
 
   if(is.numeric(downsample.object.first)) {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Downsampling...","\n")
-    if (downsample.object.first > length(colnames(seurat_object)))
+    }
+    if (downsample.object.first > length(colnames(seurat_object))) {
       warning("downsample.object.first is greater than the number of cells in seurat_object, no downsampling was done",immediate. = T)
+    }
     current.ident = Idents(seurat_object)
     seurat_object@meta.data$seurat_object = "seurat_object"
     Idents(seurat_object) = "seurat_object"
@@ -130,27 +139,32 @@ Reference_Matrix_Builder = function(
   }
 
   if(is.character(clusters.1)) {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Subsetting...","\n")
+    }
     Idents(seurat_object) = "ident.1"
     seurat_object = subset(seurat_object, idents = clusters.1, invert = clusters.1.invert)
-    if (is.character(ident.2))
+    if (is.character(ident.2)) {
       Idents(seurat_object) = "double.ident"
+    }
   }
 
   if (is.character(clusters.2)) {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Subsetting...","\n")
+    }
     Idents(seurat_object) = "ident.2"
     seurat_object = subset(seurat_object, idents = clusters.2, invert = clusters.2.invert)
     Idents(seurat_object) = "double.ident"
   }
 
   if(is.numeric(downsample.object.last)) {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Downsampling...","\n")
-    if (downsample.object.last > length(colnames(seurat_object)))
+    }
+    if (downsample.object.last > length(colnames(seurat_object))) {
       warning("downsample.object.last is greater than the number of cells in seurat_object, no downsampling was done",immediate. = T)
+    }
     current.ident = Idents(seurat_object)
     seurat_object@meta.data$seurat_object2 = "seurat_object2"
     Idents(seurat_object) = "seurat_object2"
@@ -160,33 +174,45 @@ Reference_Matrix_Builder = function(
   }
 
   if(is.numeric(downsample.cluster)) {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Downsampling...","\n")
+    }
     Idents(seurat_object) = "ident.1"
     cell.list = WhichCells(seurat_object, downsample = downsample.cluster)
     seurat_object2 = seurat_object[,cell.list]
-    if (length(colnames(seurat_object2)) == length(colnames(seurat_object)))
+    if (length(colnames(seurat_object2)) == length(colnames(seurat_object))) {
       warning("downsample.cluster is greater than the number of cells in each cluster, no downsampling was done",immediate. = T)
+    }
     seurat_object = seurat_object2
-    if (is.character(ident.2))
+    if (is.character(ident.2)) {
       Idents(seurat_object) = "double.ident"
+    }
   }
 
-  if (isFALSE(double.ident))
+  if (isFALSE(double.ident)) {
     Idents(seurat_object) = "ident.1"
+  }
 
   if (inherits(seurat_object[[assay]],"Assay5")) {
-    if (isTRUE(verbose))
-      cat("Joining layers...","\n")
-    seurat_object2 = seurat_object
-    seurat_object2[[assay]] = JoinLayers(seurat_object2[[assay]])
-    if (isTRUE(verbose))
+    if (length(Layers(seurat_object, search = layer)) > 1) {
+      if (isTRUE(verbose)) {
+        cat("Joining layers...","\n")
+      }
+      seurat_object2 = seurat_object
+      seurat_object2[[assay]] = JoinLayers(seurat_object2[[assay]])
+    }
+    else {
+      seurat_object2 = seurat_object
+    }
+    if (isTRUE(verbose)) {
       cat("Extracting the expression matrix...","\n")
+    }
     refmat = LayerData(seurat_object2, assay = assay, layer = layer)
   }
   else {
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Extracting the expression matrix...","\n")
+    }
     refmat = GetAssayData(seurat_object, assay = assay, slot = layer)
   }
 
@@ -195,7 +221,7 @@ Reference_Matrix_Builder = function(
   if (isTRUE(check.size)) {
     refmat.size = length(refmat)/500000/1.02
 
-    if (projected.cell.number >= length(colnames(refmat)))
+    if (projected.cell.number >= length(colnames(refmat))) {
       cat("Current estimated Reference Matrix size on CIBERSORTx web portal is between ",
           trunc(refmat.size/1.01),
           " and ",
@@ -209,6 +235,7 @@ Reference_Matrix_Builder = function(
           " features",
           "\n",
           "You do not need to downsample your Seurat object","\n",sep="")
+    }
 
     else {
       if (isTRUE(automatic.downsample)) {
@@ -236,7 +263,7 @@ Reference_Matrix_Builder = function(
         Idents(seurat_object) = current.ident
         seurat_object = seurat_object[,cell.list]
       }
-      else
+      else {
         cat("Current estimated Reference Matrix size on CIBERSORTx web portal is between ",
             trunc(refmat.size/1.01),
             " and ",
@@ -254,30 +281,36 @@ Reference_Matrix_Builder = function(
             " cells for a Reference Matrix under ",
             max.matrix.size,
             " MB","\n",sep="")
+      }
     }
 
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Cleaning...","\n")
+    }
     seurat_object$ident.1 = NULL
     if (is.character(ident.2)) {
       seurat_object$ident.2 = NULL
       seurat_object$double.ident = NULL
     }
-    if(is.numeric(downsample.object.first))
+    if(is.numeric(downsample.object.first)) {
       seurat_object$seurat_object = NULL
-    if(is.numeric(downsample.object.last))
+    }
+    if(is.numeric(downsample.object.last)) {
       seurat_object$seurat_object2 = NULL
-    if(isTRUE(automatic.downsample) & projected.cell.number < length(colnames(refmat)))
+    }
+    if(isTRUE(automatic.downsample) & projected.cell.number < length(colnames(refmat))) {
       seurat_object$seurat_object3 = NULL
+    }
     Idents(seurat_object) = to.put.back
     gc(verbose = F)
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Done.","\n")
+    }
     return(seurat_object)
   }
 
-  if (length(refmat) > 500000*max.matrix.size/1.02 & isTRUE(write))
-    if (isFALSE(automatic.downsample))
+  if (length(refmat) > 500000*max.matrix.size/1.02 & isTRUE(write)) {
+    if (isFALSE(automatic.downsample)) {
       stop(paste0("The Reference Matrix file is projected to be over the size limit of ",
                max.matrix.size,
                " MB on CIBERSORTx web portal :",
@@ -289,6 +322,7 @@ Reference_Matrix_Builder = function(
                " features",
                "\n",
                " Please subset clusters, downsample the number of cells or set automatic.downsample = TRUE"))
+    }
     else {
       warning(paste0("The Reference Matrix file is projected to be over the size limit of ",
       max.matrix.size,
@@ -310,37 +344,50 @@ Reference_Matrix_Builder = function(
       Idents(seurat_object) = current.ident
       seurat_object = seurat_object[,cell.list]
       if (inherits(seurat_object[[assay]],"Assay5")) {
-        seurat_object[[assay]] = JoinLayers(seurat_object[[assay]])
+        if (length(Layers(seurat_object, search = layer)) > 1) {
+          if (isTRUE(verbose)) {
+            cat("Joining layers...","\n")
+          }
+          seurat_object[[assay]] = JoinLayers(seurat_object[[assay]])
+        }
         refmat = LayerData(seurat_object, assay = assay, layer = layer)
       }
-      else
+      else {
         refmat = GetAssayData(seurat_object, assay = assay, slot = layer)
+      }
     }
+  }
 
-  if (isTRUE(verbose))
+  if (isTRUE(verbose)) {
     cat("Building the data.table...","\n")
+  }
   refmat = as.data.frame(refmat)
   refmat = cbind(Gene = rownames(refmat),refmat)
   refmat = setDT(refmat)
-  if (isFALSE(cell.barcodes))
+  if (isFALSE(cell.barcodes)) {
     colnames(refmat) = c("Gene", as.character(seurat_object@active.ident))
+  }
 
   if (isTRUE(write)) {
-    if(is.null(write.path))
+    if(is.null(write.path)) {
       write.path = getwd()
+    }
     if (isTRUE(grepl(" ",file.name))) {
       warning("The file name contains one or several spaces, renaming with underscores as CIBERSORTx will otherwise report an error with the Reference Matrix...",immediate. = T)
       file.name = gsub(" ","_",file.name)
     }
-    if (isTRUE(verbose))
+    if (isTRUE(verbose)) {
       cat("Writing to disk...","\n")
+    }
     fwrite(refmat, file = paste0(write.path,"/",file.name,".",file.format), sep = file.sep, quote = F)
   }
 
-  if (isTRUE(verbose))
+  if (isTRUE(verbose)) {
     cat("Cleaning...","\n")
+  }
   gc(verbose = F)
-  if (isTRUE(verbose))
+  if (isTRUE(verbose)) {
     cat("Done.","\n")
+  }
   return(refmat)
 }
