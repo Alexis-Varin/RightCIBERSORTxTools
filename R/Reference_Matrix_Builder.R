@@ -88,6 +88,8 @@ Reference_Matrix_Builder = function(
     write = TRUE,
     verbose = TRUE) {
 
+  .Deprecated(new = "Reference_Matrix_Builder", msg = 'RightCIBERSORTxTools is not being maintained any more, all functions have been moved to RightOmicsTools.\nYou may install this package using devtools::install_github("Alexis-Varin/RightOmicsTools")')
+
   if (isTRUE(verbose)) {
     cat("Starting...","\n")
   }

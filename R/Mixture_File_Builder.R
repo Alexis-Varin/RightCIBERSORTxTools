@@ -26,6 +26,8 @@ Mixture_File_Builder = function(
     write = TRUE,
     verbose = TRUE) {
 
+  .Deprecated(new = "Mixture_File_Builder", msg = 'RightCIBERSORTxTools is not being maintained any more, all functions have been moved to RightOmicsTools.\nYou may install this package using devtools::install_github("Alexis-Varin/RightOmicsTools")')
+
   if (is.null(objects) & is.null(files.path))
     stop("Please provide at least one object or a path to your files")
 
